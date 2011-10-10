@@ -112,7 +112,7 @@ class Board(object):
         """Returns board info."""
         board_info_url = "%s/Kanban/Api/Board/%s/GetBoardIdentifiers" % \
             (self.service.base_url, self.board_id)
-        content = self.service.call(board_info_url, cached=True)
+        content = self.service.call(board_info_url)
         return self._parse_info(content)
 
     def _parse_info(self, data):
@@ -177,12 +177,9 @@ class LeanKitService(object):
             "AssignedUserIds": [] # array of Ids for each board user to assign, get from GetBoardIdentifiers
             }
 
-    def call(self, url, method="GET", cached=False, data=None, headers=None):
+    def call(self, url, method="GET", data=None, headers=None):
         """Calls service API method."""
-        if cached:
-            http = httplib2.Http(".cache")
-        else:
-            http = httplib2.Http()
+        http = httplib2.Http()
         user = self.env.config.get(CONFIG_SECTION, 'kanban_auth_user')
         password = self.env.config.get(CONFIG_SECTION, 'kanban_auth_password')
         http.add_credentials(user, password)
