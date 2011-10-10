@@ -160,11 +160,12 @@ class LeanKitService(object):
         trac_url = self.env.config.get('trac', 'base_url')
         priorities = dict(zip(self.env.config.getlist(CONFIG_SECTION, 'trac_priorities'),
                               self.env.config.getlist(CONFIG_SECTION, 'kanban_priorities')))
+        priority_field = self.env.config.getlist(CONFIG_SECTION, 'trac_priority_field')
         return {
             "Title": ticket['summary'],
             "Description": ticket['description'],
             "TypeId": None,
-            "Priority": priorities[ticket['priority']],
+            "Priority": priorities[ticket[priority_field]],
             "Size": 1,
             "IsBlocked": False,
             "BlockReason": "",  # must specify if Card is blocked
