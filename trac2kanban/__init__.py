@@ -110,14 +110,10 @@ class Board(object):
         self.lane_id, self.card_type_id = self._get_info()
 
     def _get_info(self):
-        """Returns board info."""
+        """Returns list of lane ID and card type ID."""
         board_info_url = "%s/Kanban/Api/Board/%s/GetBoardIdentifiers" % \
             (self.service.base_url, self.board_id)
-        content = self.service.call(board_info_url)
-        return self._parse_info(content)
-
-    def _parse_info(self, data):
-        """Returns list of lane ID and card type ID."""
+        data = self.service.call(board_info_url)
         lane_position = int(self.env.config.get(CONFIG_SECTION, 'kanban_lane_position'))
         card_types = self.env.config.getlist(CONFIG_SECTION, 'kanban_card_type')
         info = [data['ReplyData'][0]['Lanes'][lane_position]['Id']]
