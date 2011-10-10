@@ -40,7 +40,8 @@ class Trac2KanbanPlugin(Component):
             return stream
         url = self.config.get(CONFIG_SECTION, 'kanban_base_url')
         service = LeanKitService(url, self.env)
-        board = service.get_board(ticket['team'])
+        team_field = self.config.get(CONFIG_SECTION, 'trac_team_field')
+        board = service.get_board(ticket[team_field])
         if not board:
             return stream
         html = Transformer('//div[@class="description"]')
@@ -67,7 +68,8 @@ class Trac2KanbanPlugin(Component):
         ticket = self._get_ticket(ticket_id)
         url = self.config.get(CONFIG_SECTION, 'kanban_base_url')
         service = LeanKitService(url, self.env)
-        board = service.get_board(ticket['team'])
+        team_field = self.config.get(CONFIG_SECTION, 'trac_team_field')
+        board = service.get_board(ticket[team_field])
         card = service.create_card(ticket)
         board.add_card(card)
         path = self.config.get(CONFIG_SECTION, 'trac_path_ticket')
