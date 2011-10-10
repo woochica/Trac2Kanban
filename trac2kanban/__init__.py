@@ -160,7 +160,7 @@ class LeanKitService(object):
         trac_url = self.env.config.get('trac', 'base_url')
         priorities = dict(zip(self.env.config.getlist(CONFIG_SECTION, 'trac_priorities'),
                               self.env.config.getlist(CONFIG_SECTION, 'kanban_priorities')))
-        priority_field = self.env.config.getlist(CONFIG_SECTION, 'trac_priority_field')
+        priority_field = self.env.config.get(CONFIG_SECTION, 'trac_priority_field')
         return {
             "Title": ticket['summary'],
             "Description": ticket['description'],
