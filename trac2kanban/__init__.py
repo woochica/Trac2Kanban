@@ -38,14 +38,16 @@ class Trac2KanbanPlugin(Component):
         permission = self.config.get(CONFIG_SECTION, 'permission')
         if not ticket or not ticket.exists or permission not in req.perm(ticket.resource):
             return stream
-        html = Transformer('//div[@class="description"]')
-        return stream | html.after(self._kanban_form(ticket))
-
-    def _kanban_form(self, ticket):
-        u"""Returns HTML markup for button."""
         url = self.config.get(CONFIG_SECTION, 'kanban_base_url')
         service = LeanKitService(url, self.env)
         board = service.get_board(ticket['team'])
+        if not board:
+            return stream
+        html = Transformer('//div[@class="description"]')
+        return stream | html.after(self._kanban_form(board, ticket))
+
+    def _kanban_form(self, board, ticket):
+        u"""Returns HTML markup for button."""
         url = board.get_card_url(ticket.id)
         if url:
             label = self.LABEL_EXISTING
@@ -104,7 +106,6 @@ class Board(object):
         self.env = trac_env
         boards = dict(zip(self.env.config.getlist(CONFIG_SECTION, 'trac_teams'),
                           self.env.config.getlist(CONFIG_SECTION, 'kanban_boards')))
-        assert board_name in boards, "team '%s' has no kanban board" % board_name
         self.board_id = boards[board_name]
         self.lane_id, self.card_type_id = self._get_info()
 
@@ -152,6 +153,10 @@ class LeanKitService(object):
 
     def get_board(self, board_name):
         """Returns `Board` instance."""
+        boards = dict(zip(self.env.config.getlist(CONFIG_SECTION, 'trac_teams'),
+                          self.env.config.getlist(CONFIG_SECTION, 'kanban_boards')))
+        if board_name not in boards:
+            return None
         return Board(self, board_name, self.env)
 
     def create_card(self, ticket):
