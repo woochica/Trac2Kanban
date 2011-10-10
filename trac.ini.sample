@@ -1,0 +1,13 @@
+[trac2kanban]
+kanban_base_url = http://mycompany.leankitkanban.com
+kanban_auth_user = user@mycompany.com
+kanban_auth_password = secret
+kanban_lane_position = 0
+kanban_card_type = Bug, Defect
+trac_path_kanban = /kanbanize
+trac_path_ticket = /ticket
+trac_priorities = minor, major, critical
+kanban_priorities = 0, 1, 3
+trac_teams = Team 1, Team 2
+kanban_boards = 1234567, 7654321
+permission = TICKET_MODIFY
