@@ -108,6 +108,7 @@ class Board(object):
         self.env = trac_env
         boards = dict(zip(self.env.config.getlist(CONFIG_SECTION, 'trac_teams'),
                           self.env.config.getlist(CONFIG_SECTION, 'kanban_boards')))
+        self.board_name = board_name
         self.board_id = boards[board_name]
         self.lane_id, self.card_type_id = self._get_info()
 
@@ -119,7 +120,9 @@ class Board(object):
         lane_position = int(self.env.config.get(CONFIG_SECTION, 'kanban_lane_position'))
         card_types = self.env.config.getlist(CONFIG_SECTION, 'kanban_card_type')
         info = [data['ReplyData'][0]['Lanes'][lane_position]['Id']]
-        info.extend(card[u'Id'] for card in data['ReplyData'][0]['CardTypes'] if card[u'Name'] in card_types)
+        card_types = [card[u'Id'] for card in data['ReplyData'][0]['CardTypes'] if card[u'Name'] in card_types]
+        assert card_types, "no valid card type found for board '%s'" % self.board_name
+        info.extend(card_types)
         return info
 
     def add_card(self, card, position=0):
