@@ -11,3 +11,5 @@ kanban_priorities = 0, 1, 3
 trac_teams = Team 1, Team 2
 kanban_boards = 1234567, 7654321
 permission = TICKET_MODIFY
+trac_priority_field = priority
+trac_team_field = team
