@@ -148,6 +148,10 @@ class Board(object):
 class LeanKitService(object):
     """A LeanKitKanBan service."""
 
+    ERROR_CODES = {
+        'access denied': 1000
+        }
+
     def __init__(self, base_url, trac_env):
         self.base_url = base_url
         self.env = trac_env
@@ -197,9 +201,13 @@ class LeanKitService(object):
         self.env.log.debug('  data = %r' % data)
         resp, json = http.request(url, method=method, headers=headers, body=data)
         if resp['status'] == "401":
-            self.env.log.debug("Unauthorized: Access is denied due to invalid credentials.")
+            msg = "Unauthorized: Access is denied due to invalid credentials."
+            self.env.log.debug(msg)
+            raise TracError(msg, title='LeanKit Error')
         elif resp['status'] == "200":
             self.env.log.debug("Response OK: %r\n" % resp)
             self.env.log.debug("Raw content: %r\n" % json)
         content = simplejson.loads(json)
+        if content['ReplyCode'] == self.ERROR_CODES['access denied']:
+            raise TracError(content['ReplyText'], title='LeanKit Error')
         return content
