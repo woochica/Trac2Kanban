@@ -38,12 +38,17 @@ class Trac2KanbanPlugin(Component):
         permission = self.config.get(CONFIG_SECTION, 'permission')
         if not ticket or not ticket.exists or permission not in req.perm(ticket.resource):
             return stream
+
         url = self.config.get(CONFIG_SECTION, 'kanban_base_url')
         service = LeanKitService(url, self.env)
         team_field = self.config.get(CONFIG_SECTION, 'trac_team_field')
         board = service.get_board(ticket[team_field])
         if not board:
             return stream
+
+        if ticket['status'] == 'closed':
+            return stream
+
         html = Transformer('//div[@class="description"]')
         return stream | html.after(self._kanban_form(board, ticket))
 
