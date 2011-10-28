@@ -186,7 +186,7 @@ class LeanKitService(object):
             "BlockReason": "",  # must specify if Card is blocked
             "DueDate": None, # dd/MM/yyyy
             "ExternalSystemName": "Trac",
-            "ExternalSystemUrl": '%s/%s/%d' % (trac_url, ticket_path, ticket.id),
+            "ExternalSystemUrl": '%s%s/%d' % (trac_url, ticket_path, ticket.id),
             "Tags": '', # comma separated list of strings
             "ClassOfServiceId": None,
             "ExternalCardID": ticket.id,
