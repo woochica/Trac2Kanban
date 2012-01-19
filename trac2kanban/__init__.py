@@ -127,7 +127,7 @@ class Board(object):
         info = [data['ReplyData'][0]['Lanes'][lane_position]['Id']]
         card_types = [card[u'Id'] for card in data['ReplyData'][0]['CardTypes'] if card[u'Name'] in card_types]
         assert card_types, "no valid card type found for board '%s'" % self.board_name
-        info.extend(card_types[0])
+        info.append(card_types[0])
         return info
 
     def add_card(self, card, position=0):
