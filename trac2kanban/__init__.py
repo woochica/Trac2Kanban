@@ -204,15 +204,20 @@ class LeanKitService(object):
         self.env.log.debug('  method = %r' % method)
         self.env.log.debug('  headers = %r' % headers)
         self.env.log.debug('  data = %r' % data)
-        resp, json = http.request(url, method=method, headers=headers, body=data)
+        resp, response_data = http.request(url, method=method, headers=headers, body=data)
         if resp['status'] == "401":
             msg = "Unauthorized: Access is denied due to invalid credentials."
             self.env.log.debug(msg)
             raise TracError(msg, title='LeanKit Error')
         elif resp['status'] == "200":
             self.env.log.debug("Response OK: %r\n" % resp)
-            self.env.log.debug("Raw content: %r\n" % json)
-        content = simplejson.loads(json)
+            self.env.log.debug("Raw content: %r\n" % response_data)
+
+        if not resp['content-type'].startswith("application/json"):
+            msg = "Service returned an invalid response, it may be temporary down: %s" % resp['content-location']
+            raise TracError(msg, title='LeanKit Error')
+
+        content = simplejson.loads(response_data)
         if content['ReplyCode'] == self.ERROR_CODES['access denied']:
             raise TracError(content['ReplyText'], title='LeanKit Error')
         return content
