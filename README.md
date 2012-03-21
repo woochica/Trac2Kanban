@@ -9,3 +9,7 @@ Install via pip.
 
     pip install git+git://github.com/nyuhuhuu/Trac2Kanban.git#egg=Trac2Kanban
 
+# Dependencies
+
+ - simplejson
+ - httplib2
